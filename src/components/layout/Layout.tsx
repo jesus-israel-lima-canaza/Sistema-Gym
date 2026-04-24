@@ -1,25 +1,26 @@
 import React, { useState } from 'react';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Users, CreditCard, Package, CalendarDays, BarChart3, LogOut, Dumbbell, Menu, X } from 'lucide-react';
+import { LayoutDashboard, Users, CreditCard, Package, CalendarDays, BarChart3, LogOut, Dumbbell, Menu, X, ShieldCheck } from 'lucide-react';
 import { auth } from '../../firebase';
 import { useAuth } from '../../AuthContext';
 import { cn } from '../../lib/utils';
 import { motion, AnimatePresence } from 'motion/react';
-
-const menuItems = [
-  { path: '/', label: 'Panel', icon: LayoutDashboard },
-  { path: '/members', label: 'Miembros', icon: Users },
-  { path: '/payments', label: 'Pagos', icon: CreditCard },
-  { path: '/inventory', label: 'Inventario', icon: Package },
-  { path: '/appointments', label: 'Citas', icon: CalendarDays },
-  { path: '/reports', label: 'Reportes', icon: BarChart3 },
-];
 
 export function Layout() {
   const location = useLocation();
   const navigate = useNavigate();
   const { profile } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const menuItems = [
+    { path: '/', label: 'Panel', icon: LayoutDashboard },
+    { path: '/members', label: 'Miembros', icon: Users },
+    { path: '/payments', label: 'Pagos', icon: CreditCard },
+    { path: '/inventory', label: 'Inventario', icon: Package },
+    { path: '/appointments', label: 'Citas', icon: CalendarDays },
+    { path: '/reports', label: 'Reportes', icon: BarChart3 },
+    ...(profile?.role === 'admin' ? [{ path: '/staff', label: 'Personal', icon: ShieldCheck }] : []),
+  ];
 
   const handleLogout = async () => {
     await auth.signOut();

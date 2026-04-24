@@ -8,15 +8,19 @@ service cloud.firestore {
 
     // Global Helpers
     function isSignedIn() { return request.auth != null; }
-    function isVerified() { return isSignedIn() && request.auth.token.email_verified == true; }
+    function isVerified() { return isSignedIn(); } // Relaxed for email/password support
     function getProfile() { return get(/databases/$(database)/documents/profiles/$(request.auth.uid)).data; }
     function isAdmin() { 
       return isVerified() && (
         getProfile().role == 'admin' || 
-        request.auth.token.email == 'Jesus.Israel.Lima.Canaza@gmail.com'
+        request.auth.token.email.lower() == 'jesus.israel.lima.canaza@gmail.com'
       ); 
     }
-    function isStaff() { return isVerified() && (getProfile().role == 'admin' || getProfile().role == 'cashier'); }
+    function isStaff() { 
+      return isVerified() && (
+        getProfile().role in ['admin', 'manager', 'staff', 'cashier']
+      ); 
+    }
     
     function isValidId(id) { return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$'); }
     function incoming() { return request.resource.data; }
@@ -28,9 +32,10 @@ service cloud.firestore {
       allow list: if isAdmin();
       allow create: if isSignedIn() && request.auth.uid == userId && 
         incoming().keys().hasAll(['role', 'email']) &&
-        incoming().role in ['admin', 'cashier'] &&
-        (incoming().role == 'cashier' || request.auth.token.email == 'Jesus.Israel.Lima.Canaza@gmail.com');
+        incoming().role in ['admin', 'manager', 'staff', 'cashier'] &&
+        (incoming().role in ['manager', 'staff', 'cashier'] || request.auth.token.email == 'Jesus.Israel.Lima.Canaza@gmail.com');
       allow update: if isAdmin();
+      allow delete: if isAdmin() && userId != request.auth.uid; // Prevent self-delete
     }
 
     // Members

@@ -8,6 +8,7 @@ import { Payments } from './pages/Payments';
 import { Inventory } from './pages/Inventory';
 import { Appointments } from './pages/Appointments';
 import { Reports } from './pages/Reports';
+import { Staff } from './pages/Staff';
 import { Login } from './pages/Login';
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -34,6 +35,7 @@ export default function App() {
             <Route path="inventory" element={<Inventory />} />
             <Route path="appointments" element={<Appointments />} />
             <Route path="reports" element={<Reports />} />
+            <Route path="staff" element={<Staff />} />
           </Route>
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>

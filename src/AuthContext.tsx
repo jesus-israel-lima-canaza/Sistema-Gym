@@ -4,7 +4,7 @@ import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { auth, db } from './firebase';
 
 interface Profile {
-  role: 'admin' | 'cashier';
+  role: 'admin' | 'staff' | 'manager' | 'cashier';
   email: string;
   name: string;
 }
@@ -27,13 +27,22 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setUser(u);
       if (u) {
         const profileDoc = await getDoc(doc(db, 'profiles', u.uid));
+        const isAdminEmail = u.email?.toLowerCase() === 'jesus.israel.lima.canaza@gmail.com';
+        
         if (profileDoc.exists()) {
-          setProfile(profileDoc.data() as Profile);
+          const currentProfile = profileDoc.data() as Profile;
+          // Force admin role if it's the admin user but role is different
+          if (isAdminEmail && currentProfile.role !== 'admin') {
+            const updatedProfile = { ...currentProfile, role: 'admin' as const };
+            await setDoc(doc(db, 'profiles', u.uid), updatedProfile);
+            setProfile(updatedProfile);
+          } else {
+            setProfile(currentProfile);
+          }
         } else {
-          // If the users email is the bootstrapped admin, create admin profile
-          const isAdminEmail = u.email === 'Jesus.Israel.Lima.Canaza@gmail.com';
+          // Create new profile
           const newProfile: Profile = {
-            role: isAdminEmail ? 'admin' : 'cashier',
+            role: isAdminEmail ? 'admin' : 'staff',
             email: u.email || '',
             name: u.displayName || 'Staff'
           };
