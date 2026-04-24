@@ -10,6 +10,7 @@ import { Appointments } from './pages/Appointments';
 import { Reports } from './pages/Reports';
 import { Staff } from './pages/Staff';
 import { Login } from './pages/Login';
+import { ThemeProvider } from './ThemeContext';
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { user, loading } = useAuth();
@@ -20,7 +21,8 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 
 export default function App() {
   return (
-    <AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
       <Router>
         <Routes>
           <Route path="/login" element={<Login />} />
@@ -40,6 +42,7 @@ export default function App() {
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </Router>
-    </AuthProvider>
+      </AuthProvider>
+    </ThemeProvider>
   );
 }

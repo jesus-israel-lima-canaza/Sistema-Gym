@@ -7,7 +7,15 @@
 
 @layer base {
   body {
-    @apply bg-neutral-950 text-white selection:bg-lime-400 selection:text-black;
+    @apply bg-neutral-950 text-white selection:bg-lime-400 selection:text-black transition-colors duration-300;
+  }
+  
+  .dark body {
+    @apply bg-neutral-950 text-white;
+  }
+
+  .light body {
+    @apply bg-neutral-50 text-neutral-950;
   }
 }
 

@@ -5,8 +5,10 @@ import { Users, CreditCard, ShoppingBag, Calendar, ArrowUpRight, TrendingUp } fr
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { motion } from 'motion/react';
 import { formatCurrency, cn } from '../lib/utils';
+import { useTheme } from '../ThemeContext';
 
 export function Dashboard() {
+  const { theme } = useTheme();
   const [stats, setStats] = useState({
     totalMembers: 0,
     activeMembers: 0,
@@ -102,11 +104,14 @@ export function Dashboard() {
         <div className="flex flex-wrap gap-4">
           <button 
             onClick={seedPlans}
-            className="px-6 py-3 border-2 border-white text-[10px] font-black uppercase tracking-widest hover:bg-white hover:text-black transition-colors"
+            className={cn(
+              "px-6 py-3 border-2 text-[10px] font-black uppercase tracking-widest transition-colors",
+              theme === 'dark' ? "border-white text-white hover:bg-white hover:text-black" : "border-black text-black hover:bg-black hover:text-white"
+            )}
           >
             Sincronizar Planes
           </button>
-          <div className="hidden sm:flex gap-4 items-center bg-neutral-900 px-6 py-3 border border-neutral-800">
+          <div className="hidden sm:flex gap-4 items-center bg-white dark:bg-neutral-900 px-6 py-3 border border-neutral-200 dark:border-neutral-800 transition-colors">
             <div className="w-2 h-2 rounded-full bg-lime-400 animate-pulse" />
             <span className="font-mono text-[10px] uppercase text-neutral-400">Status: Online</span>
           </div>
@@ -121,7 +126,7 @@ export function Dashboard() {
           { label: 'Accesos Hoy', value: stats.recentCheckins.length + 12, accent: false },
           { label: 'Pendientes', value: '08', accent: false },
         ].map((stat, i) => (
-          <div key={i} className={cn("border-l-4 pl-6 transition-all hover:translate-x-1", stat.accent ? "border-lime-400" : "border-neutral-800")}>
+          <div key={i} className={cn("border-l-4 pl-6 transition-all hover:translate-x-1", stat.accent ? "border-lime-400" : "border-neutral-200 dark:border-neutral-800")}>
             <p className="text-xs font-bold text-neutral-500 uppercase mb-2 tracking-widest">{stat.label}</p>
             <p className="text-5xl font-black tracking-tight">{stat.value}</p>
           </div>
@@ -131,7 +136,7 @@ export function Dashboard() {
       {/* Main Content Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
         {/* Demographics */}
-        <div className="lg:col-span-4 bg-neutral-900 border border-neutral-800 p-8 flex flex-col justify-between group overflow-hidden relative">
+        <div className="lg:col-span-4 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 p-8 flex flex-col justify-between group overflow-hidden relative transition-colors">
           <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
             <Users className="w-48 h-48 -mr-12 -mt-12" />
           </div>
@@ -144,18 +149,18 @@ export function Dashboard() {
                     <span>{item.name}</span>
                     <span>{item.value}%</span>
                   </div>
-                  <div className="w-full h-4 bg-neutral-950 border border-neutral-800">
+                  <div className="w-full h-4 bg-neutral-100 dark:bg-neutral-950 border border-neutral-200 dark:border-neutral-800 transition-colors">
                     <motion.div 
                       initial={{ width: 0 }}
                       animate={{ width: `${item.value}%` }}
-                      className={cn("h-full", i === 0 ? "bg-white" : "bg-lime-400")}
+                      className={cn("h-full", i === 0 ? (theme === 'dark' ? "bg-white" : "bg-black") : "bg-lime-400")}
                     />
                   </div>
                 </div>
               ))}
             </div>
           </div>
-          <div className="pt-10 border-t border-neutral-800 mt-12 relative z-10">
+          <div className="pt-10 border-t border-neutral-100 dark:border-neutral-800 mt-12 relative z-10">
             <p className="text-[10px] uppercase font-bold text-neutral-500 tracking-widest mb-2">Rango de Edad Promedio</p>
             <p className="text-6xl font-black tracking-tighter">18-35</p>
           </div>
@@ -170,7 +175,7 @@ export function Dashboard() {
               <span className="flex items-center gap-2"><i className="w-2 h-2 bg-neutral-800"></i> Gastos</span>
             </div>
           </div>
-          <div className="flex-1 bg-neutral-900 border border-neutral-800 p-10 flex items-end gap-2 sm:gap-4 h-[400px]">
+          <div className="flex-1 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 p-10 flex items-end gap-2 sm:gap-4 h-[400px] transition-colors">
              {incomeData.map((data, i) => {
                const height = (data.income / 5000) * 100;
                return (
@@ -178,14 +183,17 @@ export function Dashboard() {
                    <motion.div 
                     initial={{ height: 0 }}
                     animate={{ height: `${height * 0.3}%` }}
-                    className="w-full bg-neutral-800 transition-colors group-hover:bg-neutral-700" 
+                    className="w-full bg-neutral-100 dark:bg-neutral-800 transition-colors group-hover:bg-neutral-200 dark:group-hover:bg-neutral-700" 
                    />
                    <motion.div 
                     initial={{ height: 0 }}
                     animate={{ height: `${height}%` }}
-                    className="w-full bg-white transition-colors group-hover:bg-lime-400" 
+                    className={cn(
+                      "w-full transition-colors group-hover:bg-lime-400",
+                      theme === 'dark' ? "bg-white" : "bg-black"
+                    )} 
                    />
-                   <span className="text-[10px] font-black text-neutral-500 mt-4 tracking-tighter group-hover:text-white transition-colors">{data.name}</span>
+                   <span className="text-[10px] font-black text-neutral-500 mt-4 tracking-tighter group-hover:text-black dark:group-hover:text-white transition-colors">{data.name}</span>
                  </div>
                );
              })}
@@ -194,7 +202,7 @@ export function Dashboard() {
       </div>
 
       {/* Footer / Activity */}
-      <footer className="grid grid-cols-1 md:grid-cols-12 gap-8 border-t border-neutral-800 pt-10">
+      <footer className="grid grid-cols-1 md:grid-cols-12 gap-8 border-t border-neutral-200 dark:border-neutral-800 pt-10 transition-colors">
         <div className="md:col-span-3">
           <p className="text-xs font-bold text-neutral-500 uppercase tracking-widest mb-2">Inventory Alert</p>
           <div className="flex items-baseline gap-2">

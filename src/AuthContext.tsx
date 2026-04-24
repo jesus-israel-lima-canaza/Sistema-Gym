@@ -13,9 +13,15 @@ interface AuthContextType {
   user: User | null;
   profile: Profile | null;
   loading: boolean;
+  updateProfileName: (newName: string) => Promise<void>;
 }
 
-const AuthContext = createContext<AuthContextType>({ user: null, profile: null, loading: true });
+const AuthContext = createContext<AuthContextType>({ 
+  user: null, 
+  profile: null, 
+  loading: true,
+  updateProfileName: async () => {}
+});
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
@@ -56,8 +62,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     });
   }, []);
 
+  const updateProfileName = async (newName: string) => {
+    if (!user || !profile) return;
+    const updatedProfile = { ...profile, name: newName };
+    await setDoc(doc(db, 'profiles', user.uid), updatedProfile);
+    setProfile(updatedProfile);
+  };
+
   return (
-    <AuthContext.Provider value={{ user, profile, loading }}>
+    <AuthContext.Provider value={{ user, profile, loading, updateProfileName }}>
       {children}
     </AuthContext.Provider>
   );
