@@ -1,0 +1,6 @@
+{
+  "name": "Titan Gym Management",
+  "description": "Comprehensive gym management system with member tracking, payments, data visualization, inventory, and reporting. Designed with a high-precision technical interface.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["firebase", "charts", "excel-export"]
+}

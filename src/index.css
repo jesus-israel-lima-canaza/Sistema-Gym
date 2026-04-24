@@ -1,0 +1,17 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+}
+
+@layer base {
+  body {
+    @apply bg-neutral-950 text-white selection:bg-lime-400 selection:text-black;
+  }
+}
+
+/* Custom bold utility for the text-8xl titles */
+.title-bold {
+  @apply text-8xl font-black leading-none tracking-tighter uppercase;
+}

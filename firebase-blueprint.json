@@ -1,0 +1,117 @@
+{
+  "entities": {
+    "Member": {
+      "title": "Member",
+      "description": "A gym member",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "phone": { "type": "string" },
+        "gender": { "type": "string", "enum": ["male", "female", "other"] },
+        "age": { "type": "number" },
+        "planId": { "type": "string" },
+        "status": { "type": "string", "enum": ["active", "inactive"] },
+        "enrolledAt": { "type": "string", "format": "date-time" },
+        "nextPaymentDate": { "type": "string", "format": "date-time" },
+        "photoUrl": { "type": "string" }
+      },
+      "required": ["name", "email", "gender", "age", "planId", "status", "enrolledAt"]
+    },
+    "Plan": {
+      "title": "Membership Plan",
+      "description": "Details of available gym plans",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "price": { "type": "number" },
+        "durationMonths": { "type": "number" },
+        "description": { "type": "string" }
+      },
+      "required": ["name", "price", "durationMonths"]
+    },
+    "Payment": {
+      "title": "Payment",
+      "description": "A payment record",
+      "type": "object",
+      "properties": {
+        "memberId": { "type": "string" },
+        "amount": { "type": "number" },
+        "date": { "type": "string", "format": "date-time" },
+        "type": { "type": "string", "enum": ["membership", "product", "service"] },
+        "description": { "type": "string" },
+        "cashierId": { "type": "string" }
+      },
+      "required": ["memberId", "amount", "date", "type", "cashierId"]
+    },
+    "CheckIn": {
+      "title": "Check-In",
+      "description": "A record of a member entering the gym",
+      "type": "object",
+      "properties": {
+        "memberId": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["memberId", "timestamp"]
+    },
+    "InventoryItem": {
+      "title": "Inventory Item",
+      "description": "Products or services offered",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "type": { "type": "string", "enum": ["product", "service"] },
+        "price": { "type": "number" },
+        "stock": { "type": "number" },
+        "description": { "type": "string" }
+      },
+      "required": ["name", "type", "price"]
+    },
+    "Appointment": {
+      "title": "Appointment",
+      "description": "Personal training session",
+      "type": "object",
+      "properties": {
+        "memberId": { "type": "string" },
+        "trainerId": { "type": "string" },
+        "date": { "type": "string", "format": "date-time" },
+        "status": { "type": "string", "enum": ["pending", "completed", "canceled"] },
+        "notes": { "type": "string" }
+      },
+      "required": ["memberId", "trainerId", "date", "status"]
+    },
+    "Expense": {
+      "title": "Expense",
+      "description": "Gym business expense",
+      "type": "object",
+      "properties": {
+        "description": { "type": "string" },
+        "amount": { "type": "number" },
+        "date": { "type": "string", "format": "date-time" },
+        "category": { "type": "string" }
+      },
+      "required": ["description", "amount", "date", "category"]
+    },
+    "UserProfile": {
+      "title": "User Profile",
+      "description": "Staff account info",
+      "type": "object",
+      "properties": {
+        "role": { "type": "string", "enum": ["admin", "cashier"] },
+        "email": { "type": "string", "format": "email" },
+        "name": { "type": "string" }
+      },
+      "required": ["role", "email"]
+    }
+  },
+  "firestore": {
+    "/members/{memberId}": { "schema": "Member", "description": "Gym members list" },
+    "/plans/{planId}": { "schema": "Plan", "description": "Available membership plans" },
+    "/payments/{paymentId}": { "schema": "Payment", "description": "Income records" },
+    "/checkins/{checkInId}": { "schema": "CheckIn", "description": "Access control logs" },
+    "/inventory/{itemId}": { "schema": "InventoryItem", "description": "Products and services" },
+    "/appointments/{appointmentId}": { "schema": "Appointment", "description": "Training citations" },
+    "/expenses/{expenseId}": { "schema": "Expense", "description": "Outgoings" },
+    "/profiles/{userId}": { "schema": "UserProfile", "description": "User roles and data" }
+  }
+}
